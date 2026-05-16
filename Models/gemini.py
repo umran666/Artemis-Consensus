@@ -5,7 +5,7 @@ import google.generativeai as genai
 from Models.base import BaseModel,ModelResponse
 
 class GeminiModel(BaseModel):
-    def __init__(self,model_id: str="",temperature:float=0.7,max_tokens:int=1024):
+    def __init__(self,model_id: str="Gemini 2.5 Flash-Lite",temperature:float=0.7,max_tokens:int=1024):
         super().__init__(model_id,temperature,max_tokens)
         genai.configure(api_key=os.getenv("Gemini_api_key"))
         self.client=genai.GenerativeModel(model_id)
