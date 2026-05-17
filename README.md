@@ -126,6 +126,30 @@ These combine into a **weighted total** that maps to a confidence label:
 
 ---
 
+## Sample Output
+
+Here's what an evaluation looks like when Artemis processes a question through all three models:
+
+### Critique Scores — Radar Chart
+
+Each model is scored across the five quality dimensions by the other models. The radar chart below shows how scores compare at a glance:
+
+<p align="center">
+  <img src="images/critique_scores_radar.png" alt="Critique Scores Radar Chart" width="700"/>
+</p>
+
+### Benchmark Accuracy — Ensemble vs Individual
+
+The ensemble consistently outperforms any single model. Below is a sample TruthfulQA run showing individual model accuracy versus the synthesized Artemis answer:
+
+<p align="center">
+  <img src="images/benchmark_accuracy.png" alt="TruthfulQA Benchmark Accuracy" width="700"/>
+</p>
+
+> **Key takeaway:** The ensemble doesn't just pick the best model — it combines the strengths of all three, producing answers that are more accurate than any individual contributor.
+
+---
+
 ## The Streamlit UI
 
 The interface is organized into five tabs:
