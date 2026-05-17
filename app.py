@@ -49,7 +49,7 @@ st.markdown('<div class="main-title">Artemis Consensus</div>', unsafe_allow_html
 st.markdown('<div class="subtitle">Multi-LLM Ensemble · Cross-Critique Synthesis · Research-Grade Evaluation</div>', unsafe_allow_html=True)
 
 question = st.text_area("Ask a question", height=100, placeholder="Type your question here...")
-run_btn  = st.button("Run Ensemble", type="primary", width="stretch")
+run_btn  = st.button("Run Ensemble", type="primary", use_container_width=True)
 
 
 if run_btn and question.strip():
@@ -94,7 +94,7 @@ if run_btn and question.strip():
                 name: score.to_dict() for name, score in result.critique_scores.items()}
             df_scores = pd.DataFrame(score_data).T
             numeric_cols = ["factuality", "confidence", "completeness", "consistency", "reasoning", "weighted_total"]
-            st.dataframe(df_scores[numeric_cols].style.format("{:.2f}").background_gradient(cmap="RdYlGn"), width="stretch")
+            st.dataframe(df_scores[numeric_cols].style.format("{:.2f}").background_gradient(cmap="RdYlGn"), use_container_width=True)
 
             fig,ax=plt.subplots(figsize=(8,4))
             dims=["factuality", "confidence", "completeness", "consistency", "reasoning"]
@@ -125,7 +125,7 @@ if run_btn and question.strip():
             }
             for r in result.model_responses
         ])
-        st.dataframe(model_metrics, width="stretch")
+        st.dataframe(model_metrics, use_container_width=True)
 elif run_btn:
     st.warning("Please enter a question to run the ensemble pipeline.")
     
