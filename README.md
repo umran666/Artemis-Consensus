@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/multimind_pipeline.svg" alt="Artemis Consensus Pipeline" width="280"/>
+  <img src="images/multimind_pipeline_flowchart.svg" alt="Artemis Consensus Pipeline" width="280"/>
 </p>
 
 <h1 align="center">Artemis Consensus</h1>
