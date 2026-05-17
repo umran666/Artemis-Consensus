@@ -128,7 +128,13 @@ These combine into a **weighted total** that maps to a confidence label:
 
 ## Sample Output
 
-Here's what an evaluation looks like when Artemis processes a question through all three models:
+Here's an actual example of Artemis processing a contentious question through all three models:
+
+**Question:** *"What causes more deaths annually — sharks or vending machines?"*
+
+> **Artemis Final Answer:** 🟢 **High Confidence (0.87)**
+>
+> Vending machines cause more deaths annually than sharks `[Gemini Flash]`. While shark attacks are rare and highly publicized, they result in an average of fewer than 10 human fatalities worldwide each year `[Qwen-72B]`. In contrast, vending machine accidents, often due to tip-overs or other accidents, can lead to more deaths `[Llama 3 (Groq)]`. Estimates suggest that in the United States alone, vending machines cause about 2-3 deaths per year `[Llama 3 (Groq)]`, and globally, the number of vending machine-related deaths could be higher `[Llama 3 (Groq)]`. It's essential to note that both shark attacks and vending machine accidents are extremely rare, and the likelihood of being killed by either is extremely low `[Llama 3 (Groq)]`.
 
 ### Critique Scores — Radar Chart
 
