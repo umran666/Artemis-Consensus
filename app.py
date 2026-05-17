@@ -55,7 +55,13 @@ run_btn  = st.button("Run Ensemble", type="primary", use_container_width=True)
 if run_btn and question.strip():
     pipeline = load_pipeline()
     with st.spinner("Running ensemble pipeline..."):
-        result = asyncio.run(pipeline.run(question))
+        try:
+            loop = asyncio.get_event_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            
+        result = loop.run_until_complete(pipeline.run(question))
 
     tabs=st.tabs(["Final Answer", "Model Responses", "Critique" , "Scores", "Metrics"])
 
