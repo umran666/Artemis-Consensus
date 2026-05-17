@@ -14,7 +14,7 @@ st.set_page_config(page_title="Artemis-Consensus", layout="wide",initial_sidebar
 
 st.markdown("""
 <style>
-    .main-title { font-size: 2.5rem; font-weight: 800; color: #1a1a2e; }
+    .main-title { font-size: 2.5rem; font-weight: 800; color: #0052cc; }
     .subtitle   { color: #555; font-size: 1rem; margin-bottom: 1.5rem; }
     .score-card { background: #f8f9fa; border-radius: 10px; padding: 1rem; margin: 0.5rem 0; }
     .badge-high   { background: #d4edda; color: #155724; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
@@ -45,7 +45,7 @@ with st.sidebar:
     st.markdown("**About**")
     st.markdown("Artemis Consensus: A Multi-LLM Ensemble System for Reliable Answer Generation.")
 
-st.markdown('<div class="main-title">🧠 Artemis Consensus</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">Artemis Consensus</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Multi-LLM Ensemble · Cross-Critique Synthesis · Research-Grade Evaluation</div>', unsafe_allow_html=True)
 
 question = st.text_area("Ask a question", height=100, placeholder="Type your question here...")
