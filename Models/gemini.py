@@ -6,13 +6,15 @@ from Models.base import BaseModel,ModelResponse
 class GeminiModel(BaseModel):
     def __init__(self,model_id: str="gemini-2.5-flash-lite",temperature:float=0.7,max_tokens:int=1024):
         super().__init__(model_id,temperature,max_tokens)
-        self.client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+        self.api_key = os.getenv("GEMINI_API_KEY")
         self.name="Gemini Flash"
     async def generate(self,prompt:str,system_prompt:str="") -> ModelResponse:
         start=time.time()
         try:
+            # Initialize client inside the async method so it binds to the current running event loop
+            client = genai.Client(api_key=self.api_key)
             full_prompt=f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
-            response = await self.client.aio.models.generate_content(
+            response = await client.aio.models.generate_content(
                 model=self.model_id,
                 contents=full_prompt,
                 config=genai.types.GenerateContentConfig(
