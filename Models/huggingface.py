@@ -26,9 +26,21 @@ class HuggingFaceModel(BaseModel):
                 max_tokens=self.max_tokens,
             )
             
-            answer = response.choices[0].message.content
+            # Robust validation for API edge cases
+            if not response:
+                raise ValueError("Received empty response from HuggingFace API")
+                
+            if hasattr(response, "choices") and response.choices:
+                answer = response.choices[0].message.content
+                tokens = getattr(response.usage, "total_tokens", len(answer.split()))
+            elif isinstance(response, dict) and "choices" in response and response["choices"]:
+                answer = response["choices"][0]["message"]["content"]
+                usage = response.get("usage", {})
+                tokens = usage.get("total_tokens", len(answer.split()))
+            else:
+                raise ValueError(f"Unexpected response format: {response}")
+                
             latency=(time.time()-star)*1000
-            tokens = getattr(response.usage, "total_tokens", len(answer.split()))
             
             return ModelResponse(
                 model_name=self.name,
