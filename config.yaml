@@ -1,0 +1,52 @@
+models:
+  llama:
+    provider: groq
+    model: llama3-70b-8192
+    temperature: 0.7
+    max_tokens: 1024
+  gemini:
+    provider: gemini
+    model: gemini-2.5-Flash-Lite
+    temperature: 0.7
+    max_tokens: 1024
+
+  mistral:
+    provider: huggingface
+    model: mistralai/Mistral-7B-Instruct-v0.2
+    temperature: 0.7
+    max_tokens: 1024
+
+
+pipeline:
+  mode: cross_critique
+  disagreement_threshold: 0.6
+  timeout_seconds: 30
+  retry_attempts: 2
+
+scoring:
+  dimensions:
+    - factuality
+    - confidence
+    - completeness
+    - consistency
+    - reasoning
+  weights:
+    factuality: 0.35
+    confidence: 0.15
+    completeness: 0.20
+    consistency: 0.15
+    reasoning: 0.15
+
+
+
+evaluation:
+  benchmarks:
+    - truthfulqa
+    - gsm8k
+  sample_size: 100
+  output_dir: data/results
+
+
+logging:
+  level: INFO
+  dir: logs
