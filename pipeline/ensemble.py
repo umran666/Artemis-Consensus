@@ -8,7 +8,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 from Models.base import BaseModel, ModelResponse
 from pipeline.scorer import Score
-from pipeline.synthesis import synthesize
+from pipeline.synthesis import synthesize, get_weighted_score
 from pipeline.critique import critique_responses
 
 
@@ -223,20 +223,45 @@ class EnsemblePipeline:
             critique_scores = critique_result.get("scores", {})
             critique_feedback = critique_result.get("feedback", {})
 
-        synthesizer = self.models[0]
+        # Resilient Synthesizer Selection & Fallback Loop
+        successful_models = []
+        for model in self.models:
+            model_name = getattr(model, "name", model.__class__.__name__)
+            if any(r.model_name == model_name and r.success for r in responses):
+                successful_models.append(model)
 
-        final_response: ModelResponse = await synthesize(
-            synthesizer=synthesizer,
-            question=question,
-            responses=responses,
-            scores=critique_scores,
-            feedback=critique_feedback,
-        )
+        if successful_models:
+            successful_models = sorted(
+                successful_models,
+                key=lambda m: get_weighted_score(getattr(m, "name", m.__class__.__name__), critique_scores),
+                reverse=True
+            )
+        else:
+            successful_models = [self.models[0]]
+
+        final_response = None
+        synthesis_errors = []
+        for synthesizer in successful_models:
+            try:
+                final_response = await synthesize(
+                    synthesizer=synthesizer,
+                    question=question,
+                    responses=responses,
+                    scores=critique_scores,
+                    feedback=critique_feedback,
+                )
+                if final_response and final_response.success and final_response.answer:
+                    break  # Synthesis succeeded!
+                else:
+                    err = final_response.error if final_response else "Empty answer"
+                    synthesis_errors.append(f"{getattr(synthesizer, 'name', synthesizer.__class__.__name__)}: {err}")
+            except Exception as e:
+                synthesis_errors.append(f"{getattr(synthesizer, 'name', synthesizer.__class__.__name__)}: {str(e)}")
 
         if not final_response or not final_response.answer:
-            error_msg = final_response.error if final_response else "No response"
+            error_msg = "; ".join(synthesis_errors) if synthesis_errors else "No successful synthesizer available"
             raise RuntimeError(
-                f"Synthesis failed to produce a final answer. Error: {error_msg}"
+                f"Synthesis failed to produce a final answer. Errors: {error_msg}"
             )
 
         final_score = average_scores(critique_scores)
