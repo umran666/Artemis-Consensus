@@ -4,7 +4,7 @@ from google import genai
 from Models.base import BaseModel,ModelResponse
 
 class GeminiModel(BaseModel):
-    def __init__(self,model_id: str="gemini-3-flash-preview",temperature:float=0.7,max_tokens:int=1024):
+    def __init__(self,model_id: str="gemini-3-flash-preview",temperature:float=0.7,max_tokens:int=8192):
         super().__init__(model_id,temperature,max_tokens)
         self.api_key = os.getenv("GEMINI_API_KEY")
         self.name="Gemini Flash"
@@ -12,14 +12,16 @@ class GeminiModel(BaseModel):
         start=time.time()
         try:
             client = genai.Client(api_key=self.api_key)
-            full_prompt=f"{system_prompt}\n\n{prompt}" if system_prompt else prompt
+            config_params = {
+                "temperature": self.temperature,
+                "max_output_tokens": self.max_tokens,
+            }
+            if system_prompt:
+                config_params["system_instruction"] = system_prompt
             response = await client.aio.models.generate_content(
                 model=self.model_id,
-                contents=full_prompt,
-                config=genai.types.GenerateContentConfig(
-                    temperature=self.temperature,
-                    max_output_tokens=self.max_tokens,
-                )
+                contents=prompt,
+                config=genai.types.GenerateContentConfig(**config_params)
             )
             latency=(time.time()-start)*1000
             text=response.text

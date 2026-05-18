@@ -15,7 +15,7 @@ class ModelResponse:
         return self.error is None
     
 class BaseModel(ABC):
-    def __init__(self,model_id:str,temperature:float=0.7,max_tokens:int=1024):
+    def __init__(self,model_id:str,temperature:float=0.7,max_tokens:int=8192):
         self.model_id=model_id
         self.temperature=temperature
         self.max_tokens=max_tokens

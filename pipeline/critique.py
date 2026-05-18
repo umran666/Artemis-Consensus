@@ -72,8 +72,9 @@ Now evaluate this answer using the required JSON scoring format."""
     )
 
     if not response or not response.answer:
+        error_msg = response.error if response else "No response"
         raise RuntimeError(
-            f"Critic {critic_name} returned empty critique for {answer_model_name}"
+            f"Critic {critic_name} returned empty critique for {answer_model_name}. Error: {error_msg}"
         )
 
     score, feedback = parse_critique_response(response.answer)

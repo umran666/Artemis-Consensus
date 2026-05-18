@@ -4,7 +4,7 @@ from groq import AsyncGroq
 from Models.base import BaseModel,ModelResponse
 
 class GroqModel(BaseModel):
-    def __init__(self,model_id:str="llama-3.3-70b-versatile",temperature:float=0.7,max_tokens:int=1024):
+    def __init__(self,model_id:str="llama-3.3-70b-versatile",temperature:float=0.7,max_tokens:int=8192):
         super().__init__(model_id,temperature,max_tokens)
         self.client=AsyncGroq(api_key=os.getenv("GROQ_API_KEY"))
         self.name="Llama 3(Groq)"

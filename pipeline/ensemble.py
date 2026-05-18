@@ -234,7 +234,10 @@ class EnsemblePipeline:
         )
 
         if not final_response or not final_response.answer:
-            raise RuntimeError("Synthesis failed to produce a final answer.")
+            error_msg = final_response.error if final_response else "No response"
+            raise RuntimeError(
+                f"Synthesis failed to produce a final answer. Error: {error_msg}"
+            )
 
         final_score = average_scores(critique_scores)
 

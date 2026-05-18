@@ -6,7 +6,7 @@ from Models.base import BaseModel,ModelResponse
 
 
 class HuggingFaceModel(BaseModel):
-    def __init__(self,model_id:str="Qwen/Qwen2.5-72B-Instruct",temperature:float=0.7,max_tokens:int=1024):
+    def __init__(self,model_id:str="Qwen/Qwen2.5-72B-Instruct",temperature:float=0.7,max_tokens:int=8192):
         super().__init__(model_id,temperature,max_tokens)
         self.api_key=os.getenv("HUGGINGFACE_API_KEY")
         self.client=AsyncInferenceClient(token=self.api_key, timeout=120)
