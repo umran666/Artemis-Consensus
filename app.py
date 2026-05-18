@@ -20,9 +20,20 @@ st.markdown("""
     .badge-high   { background: #d4edda; color: #155724; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
     .badge-medium { background: #fff3cd; color: #856404; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
     .badge-low    { background: #f8d7da; color: #721c24; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+    .badge-needs-verification { background: #f1f3f5; color: #343a40; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+    .badge-unknown { background: #e9ecef; color: #495057; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
 </style>
 """, unsafe_allow_html=True)
 
+
+
+def badge_class(label: str) -> str:
+    return {
+        "High Confidence": "badge-high",
+        "Medium Confidence": "badge-medium",
+        "Low Confidence": "badge-low",
+        "Needs Verification": "badge-needs-verification",
+    }.get(label, "badge-unknown")
 
 
 @st.cache_resource
@@ -68,7 +79,7 @@ if run_btn and question.strip():
     with tabs[0]:
         if result.final_answer:
             label=result.final_score.confidence_label if result.final_score else "Unknown"
-            st.markdown(f"Confidence: <span class='badge-{label.lower()}'>{label}</span>", unsafe_allow_html=True)
+            st.markdown(f"Confidence: <span class='{badge_class(label)}'>{label}</span>", unsafe_allow_html=True)
         if result.disagreement_detected:
             st.warning("⚠️ Disagreement detected between models!")
         st.markdown(f"### Final Answer:\n{result.final_answer}")

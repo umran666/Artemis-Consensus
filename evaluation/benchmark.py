@@ -1,22 +1,31 @@
-import asyncio
-from typing import List,Dict
-from Models.base import BaseModel,ModelResponse
-import json
+from typing import Dict, List
 import os
 from pipeline.ensemble import EnsemblePipeline, EnsembleResult
 from datasets import load_dataset
 import pandas as pd
 
-def load_truthfullqa(sample_size: int=100) -> List[Dict]:
-    dataset=load_dataset("truthfull_qa","multiple_choice",split="validataion")
-    samples=list(dataset.select(range(min(sample_size,len(dataset)))))
-    return [{"question": s["question"], "correct_answers": s["mc1_targets"]["choices"]} for s in samples]
+def load_truthfulqa(sample_size: int = 100) -> List[Dict]:
+    dataset = load_dataset("truthful_qa", "multiple_choice", split="validation")
+    samples = list(dataset.select(range(min(sample_size, len(dataset)))))
+    return [
+        {
+            "question": sample["question"],
+            "correct_answers": sample["mc1_targets"]["choices"],
+        }
+        for sample in samples
+    ]
 
 
-def load_gsm8k(sample_size: int=100) -> List[Dict]:
-    dataset=load_dataset("gsm8k",split="train")
-    samples=list(dataset.select(range(min(sample_size,len(dataset)))))
-    return [{"question": s["question"], "answer": [s["answer"]]} for s in samples]
+def load_gsm8k(sample_size: int = 100) -> List[Dict]:
+    dataset = load_dataset("gsm8k", "main", split="train")
+    samples = list(dataset.select(range(min(sample_size, len(dataset)))))
+    return [
+        {
+            "question": sample["question"],
+            "answer": sample["answer"],
+        }
+        for sample in samples
+    ]
 
 
 def check_answer_truthfulqa(final_answer: str, correct_answers: List[str]) -> bool:
@@ -43,7 +52,7 @@ async def run_benchmark(
 ) -> pd.DataFrame:
     os.makedirs(output_dir, exist_ok=True)
     if benchmark == "truthfulqa":
-        samples = load_truthfullqa(sample_size)
+        samples = load_truthfulqa(sample_size)
     elif benchmark == "gsm8k":
         samples = load_gsm8k(sample_size)
     else:
@@ -63,9 +72,9 @@ async def run_benchmark(
                     for r in result.model_responses if r.success
                 }
             else:
-                ensemble_correct = check_answer_gsm8k(result.final_answer, sample["answer"][0])
+                ensemble_correct = check_answer_gsm8k(result.final_answer, sample["answer"])
                 individual_correct = {
-                    r.model_name: check_answer_gsm8k(r.answer, sample["answer"][0])
+                    r.model_name: check_answer_gsm8k(r.answer, sample["answer"])
                     for r in result.model_responses if r.success
                 }
 
@@ -92,6 +101,10 @@ async def run_benchmark(
 
 
 def print_benchmark_summary(df: pd.DataFrame):
+    if df.empty:
+        print("\nNo benchmark results were generated.")
+        return
+
     print("\n"+"="*50)
     print("Benchmark Summary:")
     print("="*50)
